@@ -488,7 +488,6 @@ const Sidebar = ({ isOpen, handleSidebarClose }) => {
                 setCountry(COUNTRIES_LIST_DEFAULT);
                 setMsg("");
                 setImage("");
-                setCountriesList([]);
               }
             }}
             theme={theme}
