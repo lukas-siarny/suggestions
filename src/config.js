@@ -2,7 +2,7 @@ export const COUNTRIES_LIST_DEFAULT = "Krajina";
 export const LIST_ERROR = "Nepodarilo sa načítať zoznam položiek";
 
 export const IMAGE = {
-  MAX_SIZE: 20000000,
+  MAX_SIZE: 20971520,
   MAX_SIZE_SHORT: "20 MB",
   SUPPORTED_TYPES: ["image/jpeg", "image/png"],
   SUPPORTED_TYPES_SHORT: ".png a .jpeg",

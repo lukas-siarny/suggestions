@@ -46,7 +46,7 @@ const ErrorWrapper = styled.div`
   padding: 2rem;
 `;
 
-const suggestionsSamples = [
+/*const suggestionsSamples = [
   {
     id: "4654654",
     firstName: "Lukáś",
@@ -215,12 +215,10 @@ const suggestionsSamples = [
     image: "https://source.unsplash.com/random/800x600",
     date: "Thu May 06 2021 16:45:21 GMT+0200 (Central European Summer Time)",
   },
-];
+];*/
 
 const SuggestionList = ({ handleSidebarOpen }) => {
-  const [suggestions, setSuggestions] = React.useState(
-    /*suggestionsSamples*/ []
-  );
+  const [suggestions, setSuggestions] = React.useState([]);
   const [status, setStatus] = React.useState(STATUS_ENUM.IDLE);
 
   const localStorageSortBy = localStorage.getItem("sortBy");
@@ -279,7 +277,11 @@ const SuggestionList = ({ handleSidebarOpen }) => {
                 key={i}
                 name={`${suggestion.firstName} ${suggestion.lastName}`}
                 address={`${suggestion.street} ${suggestion.streetNumber}, ${suggestion.city}, ${suggestion.postalCode}, ${suggestion.country}`}
-                image={suggestion.image}
+                image={
+                  suggestion.image
+                    ? `${process.env.REACT_APP_API}/${suggestion.image}`
+                    : ""
+                }
                 date={new Date(suggestion.date)}
                 text={suggestion.message}
                 id={suggestion.customId}

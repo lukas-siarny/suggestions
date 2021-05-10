@@ -218,7 +218,7 @@ const ErrorWrapper = styled.div`
   padding: 2rem;
 `;
 
-const suggestionSample = {
+/*const suggestionSample = {
   firstName: "Petra",
   lastName: "Atrepová",
   street: "Lipová",
@@ -228,7 +228,7 @@ const suggestionSample = {
   country: "Slovakia",
   image: "https://source.unsplash.com/random/800x600",
   date: "Thu May 06 2021 16:45:21 GMT+0200 (Central European Summer Time)",
-};
+};*/
 
 const SuggestionDetail = ({ match: { params } }) => {
   const [isModalOpen, setIsModalOpen] = React.useState(false);
@@ -304,7 +304,7 @@ const SuggestionDetail = ({ match: { params } }) => {
                     <>
                       <ImgPreview>
                         <img
-                          src={suggestion.image}
+                          src={`${process.env.REACT_APP_API}/${suggestion.image}`}
                           alt={`${suggestion.firstName} ${suggestion.lastName}`}
                         />
                         <ImgHover
@@ -349,7 +349,7 @@ const SuggestionDetail = ({ match: { params } }) => {
     <>
       {isModalOpen && (
         <PhotoModal
-          image={suggestion.image}
+          image={`${process.env.REACT_APP_API}/${suggestion.image}`}
           onModalPhotoClose={() => setIsModalOpen(false)}
         />
       )}

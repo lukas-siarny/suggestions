@@ -63,7 +63,9 @@ const Error = styled.span`
 `;
 
 const TextInput = ({ value, onValueChange, label, errorMsg }) => {
-  const [labelTransition, setLabelTransition] = React.useState(false);
+  const [labelTransition, setLabelTransition] = React.useState(
+    !value ? false : true
+  );
   const { theme } = React.useContext(ThemeContext);
 
   return (

@@ -262,41 +262,41 @@ const Sidebar = ({ isOpen, handleSidebarClose }) => {
     // API call to save valid entry to DB
     setStatus(STATUS_ENUM.LOADING);
 
-    const newSuggestion = {
-      firstName,
-      lastName,
-      street,
-      streetNumber,
-      city,
-      postalCode,
-      country,
-      message: msg,
-    };
+    const formData = new FormData();
+    formData.append("firstName", firstName);
+    formData.append("lastName", lastName);
+    formData.append("street", street);
+    formData.append("streetNumber", streetNumber);
+    formData.append("city", city);
+    formData.append("postalCode", postalCode);
+    formData.append("country", country);
+    formData.append("message", msg);
+    formData.append("image", image);
 
     try {
       const settings = {
         method: "POST",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(newSuggestion),
+        body: formData,
       };
 
       const response = await fetch(
         `${process.env.REACT_APP_API}/suggestions/`,
         settings
       );
+
+      if (response.status === 400) {
+        setStatus(STATUS_ENUM.ERROR);
+        return;
+      }
+
       const responseJson = await response.json();
       setResponse(responseJson);
 
       setStatus(STATUS_ENUM.FULFILLED);
     } catch (err) {
-      console.log(err.message);
       setStatus(STATUS_ENUM.ERROR);
+      console.log(err.message);
     }
-
-    //setTimeout(() => setStatus(STATUS_ENUM.FULFILLED), 1000);
   };
 
   //
@@ -315,6 +315,20 @@ const Sidebar = ({ isOpen, handleSidebarClose }) => {
     }
 
     setImage(img);
+  };
+
+  const setDefault = () => {
+    setTimeout(() => setStatus(STATUS_ENUM.IDLE), 250);
+
+    setFirstName("");
+    setLastName("");
+    setStreet("");
+    setStreetNumber("");
+    setPostalCode("");
+    setCity("");
+    setCountry(COUNTRIES_LIST_DEFAULT);
+    setMsg("");
+    setImage("");
   };
 
   let form;
@@ -358,6 +372,7 @@ const Sidebar = ({ isOpen, handleSidebarClose }) => {
                 // eslint-disable-next-line no-restricted-globals
                 history.push(`/suggestion/${response.customId}`);
                 handleSidebarClose();
+                setDefault();
               }}
             />
           )}
@@ -477,17 +492,7 @@ const Sidebar = ({ isOpen, handleSidebarClose }) => {
                 status !== STATUS_ENUM.IDLE ||
                 status !== STATUS_ENUM.LOADING
               ) {
-                setTimeout(() => setStatus(STATUS_ENUM.IDLE), 250);
-
-                setFirstName("");
-                setLastName("");
-                setStreet("");
-                setStreetNumber("");
-                setPostalCode("");
-                setCity("");
-                setCountry(COUNTRIES_LIST_DEFAULT);
-                setMsg("");
-                setImage("");
+                setDefault();
               }
             }}
             theme={theme}
