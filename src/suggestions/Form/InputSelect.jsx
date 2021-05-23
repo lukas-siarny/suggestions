@@ -24,7 +24,7 @@ const Selected = styled.div`
   font-size: 0.875rem;
   position: relative;
   ${({ selected, theme, defaultValue }) =>
-    selected === defaultValue &&
+    selected.label === defaultValue.label &&
     css`
       color: ${theme.fontColorLight};
       text-transform: uppercase;
@@ -119,7 +119,7 @@ const SelectMenu = ({
   selected,
   options,
   handleChange,
-  defaultValue = "Vyberte možnosť",
+  defaultValue = { label: "Vyberte možnosť" },
   optionsError = LIST_ERROR,
   clearable = true,
   errorMsg,
@@ -127,6 +127,13 @@ const SelectMenu = ({
   const [isOpen, setIsOpen] = React.useState(false);
   const { theme } = React.useContext(ThemeContext);
   const wrapperEl = React.useRef(null);
+
+  /*
+    const options = [{
+      label: "label",
+      value: newest
+    }]
+  */
 
   React.useEffect(() => {
     const handleKeyDown = (e) => {
@@ -159,10 +166,10 @@ const SelectMenu = ({
         theme={theme}
         defaultValue={defaultValue}
       >
-        {selected}
+        {selected.label}
         <IconsWrapper theme={theme}>
           <IconArrow className="fas fa-chevron-down" isOpen={isOpen} />
-          {clearable && selected !== defaultValue && (
+          {clearable && selected.label !== defaultValue.label && (
             <IconRemove
               className="fas fa-times select-remove"
               onClick={() => handleChange(defaultValue)}
@@ -175,16 +182,16 @@ const SelectMenu = ({
           options.map((option, index) => (
             <SelectOption
               onClick={() => {
-                if (option !== optionsError) {
+                if (option.label !== optionsError.label) {
                   handleChange(option);
                 }
                 setIsOpen(false);
               }}
-              isSelected={selected === option}
+              isSelected={selected.label === option.label}
               key={index}
               isOpen={isOpen}
             >
-              {option}
+              {option.label}
             </SelectOption>
           ))}
       </SelectOptions>

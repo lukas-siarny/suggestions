@@ -176,7 +176,9 @@ const Sidebar = ({ isOpen, handleSidebarClose }) => {
           "https://restcountries.eu/rest/v2/all?fields=name"
         );
         const countriesJson = await response.json();
-        const countriesMapped = countriesJson.map((country) => country.name);
+        const countriesMapped = countriesJson.map((country) => ({
+          label: country.name,
+        }));
         setCountriesList((state) => [...state, ...countriesMapped]);
       } catch {
         setCountriesList([LIST_ERROR]);

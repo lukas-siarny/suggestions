@@ -1,15 +1,20 @@
 import React from "react";
 import styled from "styled-components";
 import SuggestionItem from "./SuggestionItem";
-import sorter from "../../utilities/sorter";
 import SelectMenu from "../Form/InputSelect";
-import { SORT_BY_ENUM, STATUS_ENUM } from "../../config";
+import {
+  DEFAULT_LIMIT,
+  DEFAULT_PAGE,
+  SORT_BY_ENUM,
+  STATUS_ENUM,
+} from "../../config";
 import { ThemeContext } from "../../Theme";
 import { THEME_TRANSITION } from "../../config";
 import Button from "../Form/Button";
 import TopBar from "./TopBar";
 import Spinner from "../Spinner";
 import Message from "../Message";
+import Paginator from "./Paginator";
 
 const SuggestionsList = styled.div`
   width: 100%;
@@ -46,205 +51,77 @@ const ErrorWrapper = styled.div`
   padding: 2rem;
 `;
 
-/*const suggestionsSamples = [
-  {
-    id: "4654654",
-    firstName: "Lukáś",
-    lastName: "Šiarny",
-    street: "Brezová",
-    streetNumber: "22",
-    city: "Spišská Nová Ves",
-    postalCode: "05201",
-    country: "Slovakia",
-    image: "",
-    date: "Thu May 05 2021 13:45:21 GMT+0200 (Central European Summer Time)",
-  },
-  {
-    id: "4654655",
-    firstName: "Peter",
-    lastName: "Retep",
-    street: "Topoľová",
-    streetNumber: "22",
-    city: "Poprad",
-    postalCode: "05555",
-    country: "Slovakia",
-    image: "",
-    date: "Thu May 04 2021 11:45:21 GMT+0200 (Central European Summer Time)",
-  },
-  {
-    id: "4654656",
-    firstName: "Michal",
-    lastName: "Lachim",
-    street: "Gaštanová",
-    streetNumber: "15",
-    city: "Krompachy",
-    postalCode: "00111",
-    country: "Slovakia",
-    image: "https://source.unsplash.com/random/800x600",
-    date: "Thu May 03 2021 16:45:21 GMT+0200 (Central European Summer Time)",
-  },
-  {
-    id: "4654657",
-    firstName: "Lukáś",
-    lastName: "Šiarny",
-    street: "Střední",
-    streetNumber: "8",
-    city: "Brno",
-    postalCode: "60200",
-    country: "Czech Republic",
-    image: "https://source.unsplash.com/random/800x600",
-    date: "Thu May 02 2021 12:45:21 GMT+0200 (Central European Summer Time)",
-  },
-  {
-    id: "4654658",
-    firstName: "Andrej",
-    lastName: "Jerdan",
-    street: "Vnitřní",
-    streetNumber: "15",
-    city: "Praha",
-    postalCode: "60500",
-    country: "Czech Republic",
-    image: "https://source.unsplash.com/random/800x600",
-    date: "Thu May 01 2021 15:45:21 GMT+0200 (Central European Summer Time)",
-  },
-  {
-    id: "4654659",
-    firstName: "Juraj",
-    lastName: "Jaruj",
-    street: "Javorová",
-    streetNumber: "15",
-    city: "Kośice",
-    postalCode: "15205",
-    country: "Slovakia",
-    image: "https://source.unsplash.com/random/800x600",
-    date: "Thu May 06 2021 16:45:21 GMT+0200 (Central European Summer Time)",
-  },
-  {
-    id: "4654660",
-    firstName: "Petra",
-    lastName: "Atrepová",
-    street: "Lipová",
-    streetNumber: "22",
-    city: "Sabinovl",
-    postalCode: "05201",
-    country: "Slovakia",
-    image: "https://source.unsplash.com/random/800x600",
-    date: "Thu May 06 2021 16:45:21 GMT+0200 (Central European Summer Time)",
-  },
-  {
-    id: "4654654",
-    firstName: "Lukáś",
-    lastName: "Šiarny",
-    street: "Brezová",
-    streetNumber: "22",
-    city: "Spišská Nová Ves",
-    postalCode: "05201",
-    country: "Slovakia",
-    image: "",
-    date: "Thu May 05 2021 13:45:21 GMT+0200 (Central European Summer Time)",
-  },
-  {
-    id: "4654655",
-    firstName: "Peter",
-    lastName: "Retep",
-    street: "Topoľová",
-    streetNumber: "22",
-    city: "Poprad",
-    postalCode: "05555",
-    country: "Slovakia",
-    image: "",
-    date: "Thu May 04 2021 11:45:21 GMT+0200 (Central European Summer Time)",
-  },
-  {
-    id: "4654656",
-    firstName: "Michal",
-    lastName: "Lachim",
-    street: "Gaštanová",
-    streetNumber: "15",
-    city: "Krompachy",
-    postalCode: "00111",
-    country: "Slovakia",
-    image: "https://source.unsplash.com/random/800x600",
-    date: "Thu May 03 2021 16:45:21 GMT+0200 (Central European Summer Time)",
-  },
-  {
-    id: "4654657",
-    firstName: "Lukáś",
-    lastName: "Šiarny",
-    street: "Střední",
-    streetNumber: "8",
-    city: "Brno",
-    postalCode: "60200",
-    country: "Czech Republic",
-    image: "https://source.unsplash.com/random/800x600",
-    date: "Thu May 02 2021 12:45:21 GMT+0200 (Central European Summer Time)",
-  },
-  {
-    id: "4654658",
-    firstName: "Andrej",
-    lastName: "Jerdan",
-    street: "Vnitřní",
-    streetNumber: "15",
-    city: "Praha",
-    postalCode: "60500",
-    country: "Czech Republic",
-    image: "https://source.unsplash.com/random/800x600",
-    date: "Thu May 01 2021 15:45:21 GMT+0200 (Central European Summer Time)",
-  },
-  {
-    id: "4654659",
-    firstName: "Juraj",
-    lastName: "Jaruj",
-    street: "Javorová",
-    streetNumber: "15",
-    city: "Kośice",
-    postalCode: "15205",
-    country: "Slovakia",
-    image: "https://source.unsplash.com/random/800x600",
-    date: "Thu May 06 2021 16:45:21 GMT+0200 (Central European Summer Time)",
-  },
-  {
-    id: "4654660",
-    firstName: "Petra",
-    lastName: "Atrepová",
-    street: "Lipová",
-    streetNumber: "22",
-    city: "Sabinovl",
-    postalCode: "05201",
-    country: "Slovakia",
-    image: "https://source.unsplash.com/random/800x600",
-    date: "Thu May 06 2021 16:45:21 GMT+0200 (Central European Summer Time)",
-  },
-];*/
+const PaginatorWrapper = styled.div`
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: center;
+`;
 
-const SuggestionList = ({ handleSidebarOpen }) => {
+const SuggestionList = ({ handleSidebarOpen, location, history }) => {
   const [suggestions, setSuggestions] = React.useState([]);
   const [status, setStatus] = React.useState(STATUS_ENUM.IDLE);
-
-  const localStorageSortBy = localStorage.getItem("sortBy");
-  const [sortBy, setSortBy] = React.useState(
-    localStorageSortBy ? localStorageSortBy : SORT_BY_ENUM.dateNewest
+  const [limit, setLimit] = React.useState(DEFAULT_LIMIT);
+  const [page, setPage] = React.useState(DEFAULT_PAGE);
+  const [total, setTotal] = React.useState(null);
+  const [selectedSorter, setSelectedSorter] = React.useState(
+    SORT_BY_ENUM.dateNewest
   );
 
   const { theme } = React.useContext(ThemeContext);
 
   React.useEffect(() => {
+    /**  
+      check if there are any query params in URL 
+        => if so, use them 
+        => if not, use default ones
+    */
+    const paramsFromUrl = Object.fromEntries(
+      new URLSearchParams(location.search)
+    );
+    const newParams = {};
+
+    const sortOptions = Object.values(SORT_BY_ENUM);
+
+    if ("sorter" in paramsFromUrl) {
+      newParams.sorter = paramsFromUrl.sorter;
+      const sortOption =
+        sortOptions.find((o) => o.value === paramsFromUrl.sorter) ||
+        SORT_BY_ENUM.dateNewest;
+      setSelectedSorter(sortOption);
+    } else {
+      newParams.sorter = SORT_BY_ENUM.dateNewest.value;
+      setSelectedSorter(SORT_BY_ENUM.dateNewest);
+    }
+
+    newParams.page =
+      "page" in paramsFromUrl ? paramsFromUrl.page : DEFAULT_PAGE;
+    newParams.limit =
+      "limit" in paramsFromUrl ? paramsFromUrl.limit : DEFAULT_LIMIT;
+
+    /** 
+      request to server based on query params
+    */
     (async () => {
       setStatus(STATUS_ENUM.LOADING);
       try {
         const response = await fetch(
-          `${process.env.REACT_APP_API}/suggestions/`
+          `${process.env.REACT_APP_API}/suggestions?${new URLSearchParams(
+            newParams
+          ).toString()}`
         );
 
         const reponseJson = await response.json();
-        setSuggestions(reponseJson);
+        setSuggestions(reponseJson.results);
+        setLimit(reponseJson.limit);
+        setPage(reponseJson.page);
+        setTotal(reponseJson.total);
         setStatus(STATUS_ENUM.FULFILLED);
       } catch (err) {
         console.log(err.message);
         setStatus(STATUS_ENUM.ERROR);
       }
     })();
-  }, []);
+  }, [location]);
 
   let content;
 
@@ -271,22 +148,42 @@ const SuggestionList = ({ handleSidebarOpen }) => {
     case STATUS_ENUM.FULFILLED:
       content = (
         <ListWrapper>
-          {suggestions.length > 0 ? (
-            sorter(suggestions, sortBy).map((suggestion, i) => (
-              <SuggestionItem
-                key={i}
-                name={`${suggestion.firstName} ${suggestion.lastName}`}
-                address={`${suggestion.street} ${suggestion.streetNumber}, ${suggestion.city}, ${suggestion.postalCode}, ${suggestion.country}`}
-                image={
-                  suggestion.image
-                    ? `${process.env.REACT_APP_API}/${suggestion.image}`
-                    : ""
-                }
-                date={new Date(suggestion.date)}
-                text={suggestion.message}
-                id={suggestion.customId}
-              />
-            ))
+          {suggestions && suggestions.length > 0 ? (
+            <>
+              {suggestions.map((suggestion, i) => (
+                <SuggestionItem
+                  key={i}
+                  name={`${suggestion.firstName} ${suggestion.lastName}`}
+                  address={`${suggestion.street} ${suggestion.streetNumber}, ${suggestion.city}, ${suggestion.postalCode}, ${suggestion.country}`}
+                  image={
+                    suggestion.image
+                      ? `${process.env.REACT_APP_API}/${suggestion.image}`
+                      : ""
+                  }
+                  date={new Date(suggestion.date)}
+                  text={suggestion.message}
+                  id={suggestion.customId}
+                />
+              ))}
+              {limit && total && page && (
+                <PaginatorWrapper>
+                  <Paginator
+                    limit={limit}
+                    total={total}
+                    page={page}
+                    onPageChange={(page) => {
+                      const searchParams = new URLSearchParams(location.search);
+                      searchParams.set("page", page);
+
+                      history.push({
+                        pathname: location.pathname,
+                        search: searchParams.toString(),
+                      });
+                    }}
+                  />
+                </PaginatorWrapper>
+              )}
+            </>
           ) : (
             <>
               <NoSuggestions theme={theme}>
@@ -310,11 +207,18 @@ const SuggestionList = ({ handleSidebarOpen }) => {
     <>
       <TopBar>
         <SelectMenu
-          selected={sortBy}
+          selected={selectedSorter}
           options={Object.values(SORT_BY_ENUM)}
           handleChange={(value) => {
-            setSortBy(value);
-            localStorage.setItem("sortBy", value);
+            setSelectedSorter(value);
+            const searchParams = new URLSearchParams(location.search);
+            searchParams.set("sorter", value.value);
+            searchParams.set("page", DEFAULT_PAGE);
+
+            history.push({
+              pathname: location.pathname,
+              search: searchParams.toString(),
+            });
           }}
           clearable={false}
         />

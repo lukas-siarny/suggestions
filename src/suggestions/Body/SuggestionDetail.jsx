@@ -6,7 +6,6 @@ import customDarken from "../../utilities/customDarken";
 import PhotoModal from "../PhotoModal";
 import formatDate from "../../utilities/formatDate";
 import TopBar from "./TopBar";
-import { Link } from "react-router-dom";
 import Spinner from "../Spinner";
 import Message from "../Message";
 
@@ -21,7 +20,7 @@ const SuggestionNumber = styled.span`
   color: ${({ theme }) => theme.colorAccent};
 `;
 
-const ButtonBack = styled(Link)`
+const ButtonBack = styled.button`
   height: 2rem;
   padding: 0 1rem;
   display: flex;
@@ -230,7 +229,7 @@ const ErrorWrapper = styled.div`
   date: "Thu May 06 2021 16:45:21 GMT+0200 (Central European Summer Time)",
 };*/
 
-const SuggestionDetail = ({ match: { params } }) => {
+const SuggestionDetail = ({ match: { params }, history }) => {
   const [isModalOpen, setIsModalOpen] = React.useState(false);
   const [suggestion, setSuggestion] = React.useState(null);
   const [status, setStatus] = React.useState(STATUS_ENUM.IDLE);
@@ -355,7 +354,7 @@ const SuggestionDetail = ({ match: { params } }) => {
       )}
       <TopBar>
         <TopBarContent>
-          <ButtonBack to="/" theme={theme}>
+          <ButtonBack onClick={() => history.goBack()} theme={theme}>
             <i className="fas fa-chevron-left"></i> Zoznam
           </ButtonBack>
           {suggestion && (
