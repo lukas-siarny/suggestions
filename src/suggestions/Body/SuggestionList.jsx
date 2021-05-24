@@ -125,6 +125,9 @@ const SuggestionList = ({ handleSidebarOpen, location, history }) => {
 
   let content;
 
+  console.log(total);
+  console.log(suggestions);
+
   switch (status) {
     case STATUS_ENUM.LOADING:
       content = (
@@ -148,7 +151,7 @@ const SuggestionList = ({ handleSidebarOpen, location, history }) => {
     case STATUS_ENUM.FULFILLED:
       content = (
         <ListWrapper>
-          {suggestions && suggestions.length > 0 ? (
+          {suggestions.length > 0 ? (
             <>
               {suggestions.map((suggestion, i) => (
                 <SuggestionItem
@@ -186,14 +189,25 @@ const SuggestionList = ({ handleSidebarOpen, location, history }) => {
             </>
           ) : (
             <>
-              <NoSuggestions theme={theme}>
-                <p>Zatiaľ neboli pridané žiadne podnety.</p>
-                <Button
-                  onClick={handleSidebarOpen}
-                  icon="fas fa-plus"
-                  value="Pridať podnet"
-                />
-              </NoSuggestions>
+              {suggestions.length === 0 && total !== "null" ? (
+                <ErrorWrapper>
+                  <Message type="error">
+                    <p>
+                      <i className="fas fa-times" />
+                      &nbsp; Chyba. Niečo sa pokazilo...
+                    </p>
+                  </Message>
+                </ErrorWrapper>
+              ) : (
+                <NoSuggestions theme={theme}>
+                  <p>Zatiaľ neboli pridané žiadne podnety.</p>
+                  <Button
+                    onClick={handleSidebarOpen}
+                    icon="fas fa-plus"
+                    value="Pridať podnet"
+                  />
+                </NoSuggestions>
+              )}
             </>
           )}
         </ListWrapper>
