@@ -1,4 +1,4 @@
-export const COUNTRIES_LIST_DEFAULT = "Krajina";
+export const COUNTRIES_LIST_DEFAULT = { label: "Krajina" };
 export const LIST_ERROR = { label: "Nepodarilo sa načítať zoznam položiek" };
 
 export const IMAGE = {

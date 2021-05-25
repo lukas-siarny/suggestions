@@ -238,7 +238,7 @@ const Sidebar = ({ isOpen, handleSidebarClose }) => {
       errors = true;
     }
 
-    if (country === COUNTRIES_LIST_DEFAULT) {
+    if (country.label === COUNTRIES_LIST_DEFAULT.label) {
       setErrorCountry("Prosím, vyberte jednu z možností *");
       errors = true;
     }
@@ -271,7 +271,7 @@ const Sidebar = ({ isOpen, handleSidebarClose }) => {
     formData.append("streetNumber", streetNumber);
     formData.append("city", city);
     formData.append("postalCode", postalCode);
-    formData.append("country", country);
+    formData.append("country", country.label);
     formData.append("message", msg);
     formData.append("image", image);
 

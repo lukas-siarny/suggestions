@@ -7,6 +7,7 @@ import SuggestionDetail from "./SuggestionDetail";
 import SuggestionList from "./SuggestionList";
 import customDarken from "../../utilities/customDarken";
 import image from "./illustration-intro.png";
+import NotFound from "./NotFound";
 
 const SuggestionsBody = styled.div`
   width: 100%;
@@ -178,6 +179,7 @@ const Body = ({ handleSidebarOpen }) => {
               path="/suggestion/:customId"
               component={SuggestionDetail}
             />
+            <Route component={NotFound} />
           </Switch>
         </MainContent>
       </FlexWrapper>

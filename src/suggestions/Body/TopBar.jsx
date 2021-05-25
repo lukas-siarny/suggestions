@@ -18,6 +18,7 @@ const TopBarElement = styled.div`
   transition: ${THEME_TRANSITION};
   transition-property: background;
   box-shadow: 0px 5px 5px 0px rgba(0, 0, 0, 0.25);
+  position: relative;
 `;
 
 const TopBar = ({ children }) => {

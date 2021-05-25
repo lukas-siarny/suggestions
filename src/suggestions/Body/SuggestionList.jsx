@@ -57,6 +57,108 @@ const PaginatorWrapper = styled.div`
   justify-content: center;
 `;
 
+const SelectMenuWrapper = styled.div`
+  width: calc(100% - 7rem);
+  position: absolute;
+  z-index: 555;
+  transform: ${({ isSearchActive }) =>
+    isSearchActive ? `translateX(calc(-100% - 2rem))` : "translateX(0)"};
+  transition: transform 250ms ease-in-out;
+`;
+
+const SearchBarWrapper = styled.div`
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 2rem;
+  overflow: hidden;
+`;
+
+const SearchBar = styled.div`
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  padding: 0 1rem;
+  background: ${({ theme }) => theme.backgroundColor};
+
+  transform: ${({ isSearchActive }) =>
+    !isSearchActive ? `translateX(calc(100% - 3rem))` : "translateX(1rem)"};
+  overflow: hidden;
+  transition: transform 250ms ease-in-out, background ${THEME_TRANSITION};
+  display: flex;
+  align-items: center;
+  z-index: 666;
+`;
+
+const SearchIcon = styled.div`
+  position: absolute;
+  left: 1rem;
+  width: 2rem;
+  height: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: ${({ theme }) => theme.fontColorLight};
+  cursor: pointer;
+  transition: ${THEME_TRANSITION};
+
+  &:hover,
+  &:focus,
+  &:active {
+    border-bottom-color: ${({ theme }) => theme.colorAccentDark};
+  }
+`;
+
+const SearchInput = styled.input`
+  height: 2rem;
+  width: 100%;
+  outline: none;
+  border-top: none;
+  border-left: none;
+  border-right: none;
+  background: transparent;
+  color: ${({ theme }) => theme.fontColor};
+  transition: ${THEME_TRANSITION};
+  border-bottom: 2px solid ${({ theme }) => theme.colorAccent};
+  padding-left: 2rem;
+  font-family: ${({ theme }) => theme.fontFamily};
+  font-size: 0.875rem;
+
+  &::placeholder {
+    color: ${({ theme }) => theme.fontColorLight};
+    font-size: 0.875rem;
+    text-transform: uppercase;
+  }
+
+  &:hover,
+  &:focus,
+  &:active {
+    border-bottom-color: ${({ theme }) => theme.colorAccentDark};
+  }
+`;
+
+const CloseIcon = styled.div`
+  position: absolute;
+  right: 1rem;
+  width: 1.5rem;
+  height: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: ${({ theme }) => theme.fontColorLight};
+  cursor: pointer;
+  transition: ${THEME_TRANSITION};
+
+  &:hover,
+  &:focus,
+  &:active {
+    border-bottom-color: ${({ theme }) => theme.colorAccentDark};
+  }
+`;
+
 const SuggestionList = ({ handleSidebarOpen, location, history }) => {
   const [suggestions, setSuggestions] = React.useState([]);
   const [status, setStatus] = React.useState(STATUS_ENUM.IDLE);
@@ -66,6 +168,8 @@ const SuggestionList = ({ handleSidebarOpen, location, history }) => {
   const [selectedSorter, setSelectedSorter] = React.useState(
     SORT_BY_ENUM.dateNewest
   );
+  const [searchValue, setSearchValue] = React.useState("");
+  const [isSearchActive, setIsSearchActive] = React.useState(false);
 
   const { theme } = React.useContext(ThemeContext);
 
@@ -124,9 +228,6 @@ const SuggestionList = ({ handleSidebarOpen, location, history }) => {
   }, [location]);
 
   let content;
-
-  console.log(total);
-  console.log(suggestions);
 
   switch (status) {
     case STATUS_ENUM.LOADING:
@@ -220,22 +321,53 @@ const SuggestionList = ({ handleSidebarOpen, location, history }) => {
   return (
     <>
       <TopBar>
-        <SelectMenu
-          selected={selectedSorter}
-          options={Object.values(SORT_BY_ENUM)}
-          handleChange={(value) => {
-            setSelectedSorter(value);
-            const searchParams = new URLSearchParams(location.search);
-            searchParams.set("sorter", value.value);
-            searchParams.set("page", DEFAULT_PAGE);
+        <SelectMenuWrapper isSearchActive={isSearchActive}>
+          <SelectMenu
+            selected={selectedSorter}
+            options={Object.values(SORT_BY_ENUM)}
+            handleChange={(value) => {
+              setSelectedSorter(value);
+              const searchParams = new URLSearchParams(location.search);
+              searchParams.set("sorter", value.value);
+              searchParams.set("page", DEFAULT_PAGE);
 
-            history.push({
-              pathname: location.pathname,
-              search: searchParams.toString(),
-            });
-          }}
-          clearable={false}
-        />
+              history.push({
+                pathname: location.pathname,
+                search: searchParams.toString(),
+              });
+            }}
+            clearable={false}
+          />
+        </SelectMenuWrapper>
+        <SearchBarWrapper>
+          <SearchBar theme={theme} isSearchActive={isSearchActive}>
+            <SearchIcon
+              theme={theme}
+              onClick={() => setIsSearchActive(!isSearchActive)}
+            >
+              <i className="fas fa-search"></i>
+            </SearchIcon>
+            <SearchInput
+              value={searchValue}
+              onChange={(e) => setSearchValue(e.target.value)}
+              type="text"
+              name="search"
+              theme={theme}
+              placeholder="Vyhľadávanie zatiaľ nefunguje..."
+            />
+            {searchValue && (
+              <CloseIcon
+                theme={theme}
+                onClick={() => {
+                  setSearchValue("");
+                  //setIsSearchActive(false);
+                }}
+              >
+                <i className="fas fa-times"></i>
+              </CloseIcon>
+            )}
+          </SearchBar>
+        </SearchBarWrapper>
       </TopBar>
       <SuggestionsList>{content}</SuggestionsList>
     </>

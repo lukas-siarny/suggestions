@@ -128,13 +128,6 @@ const SelectMenu = ({
   const { theme } = React.useContext(ThemeContext);
   const wrapperEl = React.useRef(null);
 
-  /*
-    const options = [{
-      label: "label",
-      value: newest
-    }]
-  */
-
   React.useEffect(() => {
     const handleKeyDown = (e) => {
       if (isOpen && e.keyCode === 27) {
