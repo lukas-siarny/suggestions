@@ -159,7 +159,7 @@ const CloseIcon = styled.div`
   }
 `;
 
-const SuggestionList = ({ handleSidebarOpen, location, history }) => {
+const SuggestionList = ({ handleSidebarOpen, location, history, refresh }) => {
   const [suggestions, setSuggestions] = React.useState([]);
   const [status, setStatus] = React.useState(STATUS_ENUM.IDLE);
   const [limit, setLimit] = React.useState(DEFAULT_LIMIT);
@@ -173,44 +173,44 @@ const SuggestionList = ({ handleSidebarOpen, location, history }) => {
 
   const { theme } = React.useContext(ThemeContext);
 
+  const sortOptions = Object.values(SORT_BY_ENUM);
+
   React.useEffect(() => {
     /**  
-      check if there are any query params in URL 
+      check if there are any query paramsFromUrl in URL 
         => if so, use them 
         => if not, use default ones
     */
-    const paramsFromUrl = Object.fromEntries(
-      new URLSearchParams(location.search)
-    );
-    const newParams = {};
+    const paramsFromUrl = new URLSearchParams(location.search);
+    const paramFromUrlSorter = paramsFromUrl.get("sorter");
+    const paramFromUrlLimit = paramsFromUrl.get("limit");
+    const paramFromUrlPage = paramsFromUrl.get("page");
 
-    const sortOptions = Object.values(SORT_BY_ENUM);
+    const params = {};
 
-    if ("sorter" in paramsFromUrl) {
-      newParams.sorter = paramsFromUrl.sorter;
+    if (paramFromUrlSorter) {
+      params.sorter = paramFromUrlSorter;
       const sortOption =
-        sortOptions.find((o) => o.value === paramsFromUrl.sorter) ||
+        sortOptions.find((o) => o.value === paramFromUrlSorter) ||
         SORT_BY_ENUM.dateNewest;
       setSelectedSorter(sortOption);
     } else {
-      newParams.sorter = SORT_BY_ENUM.dateNewest.value;
+      params.sorter = SORT_BY_ENUM.dateNewest.value;
       setSelectedSorter(SORT_BY_ENUM.dateNewest);
     }
 
-    newParams.page =
-      "page" in paramsFromUrl ? paramsFromUrl.page : DEFAULT_PAGE;
-    newParams.limit =
-      "limit" in paramsFromUrl ? paramsFromUrl.limit : DEFAULT_LIMIT;
+    params.page = paramFromUrlPage ? paramFromUrlPage : DEFAULT_PAGE;
+    params.limit = paramFromUrlLimit ? paramFromUrlLimit : DEFAULT_LIMIT;
 
     /** 
-      request to server based on query params
+      request to server based on query paramsFromUrl
     */
     (async () => {
       setStatus(STATUS_ENUM.LOADING);
       try {
         const response = await fetch(
           `${process.env.REACT_APP_API}/suggestions?${new URLSearchParams(
-            newParams
+            params
           ).toString()}`
         );
 
@@ -225,7 +225,8 @@ const SuggestionList = ({ handleSidebarOpen, location, history }) => {
         setStatus(STATUS_ENUM.ERROR);
       }
     })();
-  }, [location]);
+    // eslint-disable-next-line
+  }, [location, refresh]);
 
   let content;
 
@@ -324,7 +325,7 @@ const SuggestionList = ({ handleSidebarOpen, location, history }) => {
         <SelectMenuWrapper isSearchActive={isSearchActive}>
           <SelectMenu
             selected={selectedSorter}
-            options={Object.values(SORT_BY_ENUM)}
+            options={sortOptions}
             handleChange={(value) => {
               setSelectedSorter(value);
               const searchParams = new URLSearchParams(location.search);
@@ -360,7 +361,6 @@ const SuggestionList = ({ handleSidebarOpen, location, history }) => {
                 theme={theme}
                 onClick={() => {
                   setSearchValue("");
-                  //setIsSearchActive(false);
                 }}
               >
                 <i className="fas fa-times"></i>

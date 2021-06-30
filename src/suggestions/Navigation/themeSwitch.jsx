@@ -50,7 +50,7 @@ const Slider = styled.div`
 `;
 
 export const ThemeSwtich = () => {
-  const { theme, lightTheme, changeTheme } = React.useContext(ThemeContext);
+  const { theme, isLightTheme, changeTheme } = React.useContext(ThemeContext);
 
   return (
     <Switch htmlFor="theme-switcher" theme={theme}>
@@ -58,7 +58,7 @@ export const ThemeSwtich = () => {
       <Slider tabIndex="1" theme={theme}>
         <input
           type="checkbox"
-          checked={!lightTheme}
+          checked={!isLightTheme}
           name="theme-switcher"
           onChange={changeTheme}
         />

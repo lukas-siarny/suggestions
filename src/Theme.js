@@ -25,14 +25,14 @@ export const ThemeContext = React.createContext(light);
 
 const Theme = ({ children }) => {
   const localStorageLightMode = localStorage.getItem("lightMode");
-  const [lightTheme, setLightTheme] = React.useState(
+  const [isLightTheme, setIsLightTheme] = React.useState(
     localStorageLightMode === "enabled" || !localStorageLightMode ? true : false
   );
 
   const changeTheme = () => {
-    setLightTheme(!lightTheme);
+    setIsLightTheme(!isLightTheme);
 
-    if (!lightTheme) {
+    if (!isLightTheme) {
       localStorage.setItem("lightMode", "enabled");
     } else {
       localStorage.setItem("lightMode", "disabled");
@@ -42,9 +42,9 @@ const Theme = ({ children }) => {
   return (
     <ThemeContext.Provider
       value={{
-        theme: lightTheme ? light : dark,
+        theme: isLightTheme ? light : dark,
         changeTheme,
-        lightTheme,
+        isLightTheme,
       }}
     >
       {children}

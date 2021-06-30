@@ -135,7 +135,7 @@ const MainContent = styled.div`
   }
 `;
 
-const Body = ({ handleSidebarOpen }) => {
+const Body = ({ handleSidebarOpen, refresh }) => {
   const { theme } = React.useContext(ThemeContext);
 
   return (
@@ -171,6 +171,7 @@ const Body = ({ handleSidebarOpen }) => {
                 <SuggestionList
                   {...props}
                   handleSidebarOpen={handleSidebarOpen}
+                  refresh={refresh}
                 />
               )}
             />

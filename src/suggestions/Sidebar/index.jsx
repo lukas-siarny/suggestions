@@ -124,7 +124,7 @@ const StatusWrapper = styled.div`
   }
 `;
 
-const Sidebar = ({ isOpen, handleSidebarClose }) => {
+const Sidebar = ({ isOpen, handleSidebarClose, forceRefresh }) => {
   const [firstName, setFirstName] = React.useState("");
   const [lastName, setLastName] = React.useState("");
   const [street, setStreet] = React.useState("");
@@ -384,7 +384,6 @@ const Sidebar = ({ isOpen, handleSidebarClose }) => {
     default:
       form = (
         <FormElement onSubmit={handleSubmit}>
-          {/*firstName*/}
           <FlexWrapper>
             <FlexItemFull>
               <TextInput
@@ -394,7 +393,6 @@ const Sidebar = ({ isOpen, handleSidebarClose }) => {
                 errorMsg={errorFirstName}
               />
             </FlexItemFull>
-            {/*lastName*/}
             <FlexItemFull>
               <TextInput
                 label="Priezvisko"
@@ -405,7 +403,6 @@ const Sidebar = ({ isOpen, handleSidebarClose }) => {
             </FlexItemFull>
           </FlexWrapper>
           <FlexWrapper>
-            {/*street*/}
             <FlexItemFull>
               <TextInput
                 label="Ulica"
@@ -414,7 +411,6 @@ const Sidebar = ({ isOpen, handleSidebarClose }) => {
                 errorMsg={errorStreet}
               />
             </FlexItemFull>
-            {/*streetNumber*/}
             <FlexItemQuarter>
               <TextInput
                 label="Popisné číslo"
@@ -425,7 +421,6 @@ const Sidebar = ({ isOpen, handleSidebarClose }) => {
             </FlexItemQuarter>
           </FlexWrapper>
           <FlexWrapper>
-            {/*city*/}
             <FlexItemFull>
               <TextInput
                 label="Mesto"
@@ -434,7 +429,6 @@ const Sidebar = ({ isOpen, handleSidebarClose }) => {
                 errorMsg={errorCity}
               />
             </FlexItemFull>
-            {/*postalCode*/}
             <FlexItemQuarter>
               <TextInput
                 label="Smerové číslo"
@@ -444,7 +438,6 @@ const Sidebar = ({ isOpen, handleSidebarClose }) => {
               />
             </FlexItemQuarter>
           </FlexWrapper>
-          {/*country*/}
           <SelectMenu
             selected={country}
             options={countriesList}
@@ -452,15 +445,11 @@ const Sidebar = ({ isOpen, handleSidebarClose }) => {
             defaultValue={COUNTRIES_LIST_DEFAULT}
             errorMsg={errorCountry}
           />
-
-          {/*msg*/}
           <TextAreaInput
             value={msg}
             onValueChange={(value) => setMsg(value)}
             errorMsg={errorMsg}
           />
-
-          {/*image*/}
           <FileInput
             image={image}
             onImageLoad={onImageLoad}
@@ -495,6 +484,9 @@ const Sidebar = ({ isOpen, handleSidebarClose }) => {
                 status !== STATUS_ENUM.LOADING
               ) {
                 setDefault();
+              }
+              if (status === STATUS_ENUM.FULFILLED) {
+                forceRefresh();
               }
             }}
             theme={theme}

@@ -5,15 +5,17 @@ import Body from "./Body";
 
 const Suggestions = () => {
   const [sidebarOpen, setSidebarOpen] = React.useState(false);
+  const [refresh, setRefresh] = React.useState(false);
 
   return (
     <>
       <Navigation handleSidebarOpen={() => setSidebarOpen(true)} />
       <Sidebar
         isOpen={sidebarOpen}
+        forceRefresh={() => setRefresh(!refresh)}
         handleSidebarClose={() => setSidebarOpen(false)}
       />
-      <Body handleSidebarOpen={() => setSidebarOpen(true)} />
+      <Body handleSidebarOpen={() => setSidebarOpen(true)} refresh={refresh} />
     </>
   );
 };
